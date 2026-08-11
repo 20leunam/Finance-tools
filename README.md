@@ -1,6 +1,6 @@
 # Finance-tools
 
-Suite de herramientas financieras personales con estética retro terminal. Alojada en GitHub Pages.
+Suite de herramientas financieras personales. Alojada en GitHub Pages.
 
 🔗 **Página web:** <https://20leunam.github.io/Finance-tools/>
 
