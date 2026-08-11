@@ -96,42 +96,43 @@ main {
 
 .panel {
   width: 100%;
-  max-width: 680px;
+  max-width: 748px;
   background: var(--white);
   border: 3px solid var(--border-lt);
-  border-radius: 20px;
+  border-radius: 22px;
   box-shadow: 0 4px 32px rgba(15,139,141,0.12);
-  padding: 42px 40px 48px;
+  padding: 46px 44px 52px;
 }
 .panel-title {
   text-align: center;
   font-family: 'DM Mono', monospace;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
-  letter-spacing: 3.5px;
+  letter-spacing: 4px;
   text-transform: uppercase;
   color: var(--teal);
-  margin-bottom: 34px;
+  margin-bottom: 38px;
 }
 
 .tools-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 26px;
 }
 
 .tool-card {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
-  gap: 16px;
+  gap: 22px;
   text-decoration: none;
   color: var(--ink);
   background: #fff;
   border: 3px solid var(--border);
-  border-radius: 20px;
-  padding: 40px 26px 34px;
+  border-radius: 22px;
+  padding: 0 36px;
+  height: 176px;
+  width: calc(176px * 1.618);
   transition: all 0.2s;
   box-shadow: 0 4px 16px rgba(15,139,141,0.08);
 }
@@ -143,13 +144,13 @@ main {
 .tool-card.gastos:hover { border-color: var(--orange); }
 
 .tool-icon {
-  width: 70px;
-  height: 70px;
-  border-radius: 18px;
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 34px;
+  font-size: 40px;
   flex-shrink: 0;
 }
 .tool-card.hipoteca .tool-icon {
@@ -161,9 +162,18 @@ main {
   border: 3px solid #ffd9a0;
 }
 
+.tool-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 8px;
+  min-width: 0;
+}
+
 .tool-name {
   font-family: 'DM Mono', monospace;
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 500;
   letter-spacing: -0.5px;
   color: var(--teal-dark);
@@ -171,10 +181,9 @@ main {
 .tool-card.gastos .tool-name { color: var(--orange-dk); }
 
 .tool-desc {
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.5;
   color: var(--ink-soft);
-  max-width: 380px;
 }
 
 /* ─── RESPONSIVE ─── */
@@ -186,12 +195,12 @@ main {
   .hero-title { font-size: 34px; }
   .hero-sub { font-size: 17px; }
   main { padding: 36px 12px 60px; }
-  .panel { padding: 26px 14px 32px; }
+  .panel { padding: 28px 16px 34px; }
   .panel-title { font-size: 14px; letter-spacing: 2px; margin-bottom: 24px; }
-  .tools-grid { grid-template-columns: 1fr; gap: 16px; }
-  .tool-card { padding: 28px 18px 26px; }
-  .tool-icon { width: 56px; height: 56px; border-radius: 15px; font-size: 28px; }
-  .tool-name { font-size: 18px; }
+  .tools-grid { gap: 16px; }
+  .tool-card { width: 100%; height: 150px; padding: 0 24px; }
+  .tool-icon { width: 60px; height: 60px; border-radius: 16px; font-size: 30px; }
+  .tool-name { font-size: 19px; }
   .tool-desc { font-size: 13px; }
 }
 </style>
@@ -217,14 +226,18 @@ main {
 
       <a class="tool-card hipoteca" href="simulador-hipoteca.html">
         <span class="tool-icon">🏠</span>
-        <span class="tool-name">Simulador Hipoteca</span>
-        <span class="tool-desc">Cuotas, vinculaciones, bonificaciones, impuestos y viabilidad de compra.</span>
+        <span class="tool-info">
+          <span class="tool-name">Simulador Hipoteca</span>
+          <span class="tool-desc">Cuotas, vinculaciones, bonificaciones, impuestos y viabilidad de compra.</span>
+        </span>
       </a>
 
       <a class="tool-card gastos" href="gestor-gastos.html">
         <span class="tool-icon">💰</span>
-        <span class="tool-name">Gestor de Gastos</span>
-        <span class="tool-desc">Ingresos, gastos fijos y variables, gráficos y resumen anual.</span>
+        <span class="tool-info">
+          <span class="tool-name">Gestor de Gastos</span>
+          <span class="tool-desc">Ingresos, gastos fijos y variables, gráficos y resumen anual.</span>
+        </span>
       </a>
 
     </div>
