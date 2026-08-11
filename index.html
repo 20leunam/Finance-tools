@@ -101,7 +101,7 @@ main {
   border: 3px solid var(--border-lt);
   border-radius: 24px;
   box-shadow: 0 4px 32px rgba(15,139,141,0.12);
-  padding: 40px 48px 46px;
+  padding: 40px 44px 46px;
 }
 .panel-title {
   text-align: center;
@@ -115,9 +115,8 @@ main {
 }
 
 .tools-grid {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 30px;
 }
 
@@ -132,9 +131,10 @@ main {
   background: #fff;
   border: 3px solid var(--border);
   border-radius: 24px;
-  padding: 30px 34px;
-  height: 286px;
-  width: calc(286px * 1.618);
+  padding: 28px 34px;
+  aspect-ratio: 1.618;
+  width: 100%;
+  min-width: 0;
   transition: all 0.2s;
   box-shadow: 0 4px 16px rgba(15,139,141,0.08);
 }
@@ -202,8 +202,8 @@ main {
   main { padding: 24px 12px 40px; }
   .panel { padding: 30px 18px 36px; }
   .panel-title { font-size: 15px; letter-spacing: 2.5px; margin-bottom: 26px; }
-  .tools-grid { gap: 18px; }
-  .tool-card { width: 100%; height: auto; padding: 30px 22px; }
+  .tools-grid { grid-template-columns: 1fr; gap: 18px; }
+  .tool-card { aspect-ratio: auto; height: auto; padding: 30px 22px; }
   .tool-icon { width: 72px; height: 72px; border-radius: 18px; font-size: 34px; }
   .tool-name { font-size: 22px; }
   .tool-desc { font-size: 15px; }
