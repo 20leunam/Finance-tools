@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestor de Gastos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --mint:      #d6fffc;
+  --mint-mid:  #b0f0ec;
+  --teal:      #0f8b8d;
+  --teal-dark: #0a5c5e;
+  --teal-xd:   #073c3e;
+  --white:     #e8fff9;
+  --orange:    #f97316;
+  --orange-dk: #d4620b;
+  --orange-lt: #fff0e6;
+  --ink:       #0d2526;
+  --ink-soft:  #3d5e60;
+  --ink-muted: #6a8c8e;
+  --border:    #b8e8e5;
+  --border-lt: #d0f4f1;
+  --red:       #c0392b;
+  --red-lt:    #fdf0ef;
+  --green:     #0d6b4a;
+  --green-lt:  #e6f7f1;
+  --violet:    #7c3aed;
+  --violet-lt: #f5f0ff;
+  --amber:     #b45309;
+  --amber-lt:  #fef3c7;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  background: #fff;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+/* ─── HEADER ─── */
+.site-header {
+  background: var(--teal-dark);
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 20px rgba(7,60,62,0.35);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px; gap: 12px;
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.header-icon { font-size: 20px; }
+.header-title { font-size: 17px; font-weight: 700; color: var(--mint); letter-spacing: -0.3px; }
+.header-right { display: flex; gap: 8px; }
+.btn-header {
+  background: var(--mint); color: var(--teal-dark);
+  border: none; border-radius: 8px; padding: 6px 14px;
+  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.btn-header:hover { background: var(--mint-mid); transform: scale(1.02); }
+
+/* ─── MAIN GRID ─── */
+.four-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1.3fr;
+  gap: 0;
+  min-height: calc(100vh - 56px);
+}
+.col { padding: 16px 14px 32px; border-right: 1px solid var(--border); overflow-y: auto; }
+.col:last-child { border-right: none; }
+.col-result { background: linear-gradient(180deg, #f0faf9 0%, #e8f6f5 100%); }
+
+/* ─── COL TITLE ─── */
+.col-title {
+  text-align: center; font-size: 13px; font-weight: 700;
+  color: var(--teal-dark); padding: 4px 0 16px; letter-spacing: 0.5px;
+}
+
+/* ─── SECTIONS ─── */
+.sec {
+  background: var(--white); border-radius: 12px; padding: 14px;
+  margin-bottom: 12px; border: 3px solid var(--border-lt);
+  box-shadow: 0 2px 8px rgba(15,139,141,0.06);
+}
+.sec-title {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--teal); margin-bottom: 12px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border-lt);
+  display: flex; align-items: center; gap: 6px;
+}
+.sec-title .icon { font-size: 13px; }
+
+/* ─── FIELDS ─── */
+.field { margin-bottom: 10px; }
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: block; font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--ink-soft); margin-bottom: 4px;
+}
+.field input[type=number],
+.field input[type=text],
+.field select {
+  width: 100%; font-family: 'Inter', sans-serif; font-size: 13px;
+  font-weight: 500; color: var(--ink); background: #fff;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 7px 10px; outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  appearance: none; -webkit-appearance: none;
+}
+.field input:focus, .field select:focus {
+  border-color: var(--teal); box-shadow: 0 0 0 3px rgba(15,139,141,0.15);
+}
+.input-wrap { position: relative; }
+.input-wrap .suf {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  font-size: 11px; font-weight: 600; color: var(--ink-muted); pointer-events: none;
+}
+.input-wrap input { padding-right: 36px; }
+
+/* checkbox row */
+.chk-row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 600; color: var(--ink-soft);
+  padding: 4px 0;
+}
+.chk-row input[type=checkbox] {
+  width: 16px; height: 16px; accent-color: var(--teal);
+}
+
+/* ─── ITEM ROW ─── */
+.item-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 6px; padding: 6px 8px;
+  background: #f9fdfc; border-bottom: 1px solid var(--border-lt);
+  transition: background 0.12s;
+}
+.item-row:last-child { border-bottom: none; }
+.item-row:hover { background: #eefaf8; }
+.item-row.prorrateado {
+  background: #fffdf7;
+  border-left: 3px solid var(--amber);
+}
+.item-info { flex: 1; min-width: 0; }
+.item-name {
+  font-size: 12px; font-weight: 600; color: var(--ink);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.item-cat { font-size: 10px; color: var(--ink-muted); }
+.item-tag {
+  display: inline-block; font-size: 9px; font-weight: 600;
+  padding: 1px 6px; border-radius: 8px; margin-left: 4px; vertical-align: middle;
+}
+.item-tag.prorr { background: var(--amber-lt); color: var(--amber); }
+.item-tag.pagas14 { background: #e0f2fe; color: #075985; }
+.item-amount {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; font-weight: 500; white-space: nowrap; flex-shrink: 0;
+}
+.item-amount.income { color: var(--green); }
+.item-amount.expense { color: var(--orange-dk); }
+.item-amount.prorr { color: var(--amber); }
+.item-btns { display: flex; gap: 2px; flex-shrink: 0; }
+.item-btns button {
+  width: 22px; height: 22px;
+  border: 1px solid var(--border); border-radius: 4px;
+  background: var(--white); font-size: 11px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.12s;
+}
+.item-btns button:hover { background: var(--mint); border-color: var(--teal); }
+.item-btns button.del:hover { background: var(--red-lt); border-color: var(--red); color: var(--red); }
+
+/* ─── CATEGORY GROUP (collapsible) ─── */
+.cat-group {
+  margin-bottom: 4px;
+  border: 1px solid var(--border-lt);
+  border-radius: 8px; overflow: hidden;
+  background: var(--white);
+}
+.cat-group.suscripciones { border-color: #d8cce8; }
+.cat-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px;
+  background: #f5faf9;
+  cursor: pointer; user-select: none;
+  transition: background 0.15s;
+}
+.cat-header:hover { background: var(--mint); }
+.cat-group.suscripciones .cat-header { background: #fdfaff; }
+.cat-group.suscripciones .cat-header:hover { background: #f3e8ff; }
+.cat-arrow {
+  font-size: 10px; transition: transform 0.2s;
+  width: 14px; text-align: center; color: var(--ink-muted);
+  flex-shrink: 0;
+}
+.cat-arrow.open { transform: rotate(90deg); }
+.cat-icon { font-size: 14px; flex-shrink: 0; }
+.cat-name {
+  font-size: 12px; font-weight: 600; color: var(--ink-soft);
+  flex: 1; min-width: 0;
+}
+.cat-badge {
+  font-size: 10px; color: var(--ink-muted);
+  padding: 1px 6px; background: #e8f0ef; border-radius: 10px;
+  white-space: nowrap;
+}
+.cat-total {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px; font-weight: 600; color: var(--orange-dk);
+  white-space: nowrap;
+}
+.cat-group.suscripciones .cat-total { color: var(--violet); }
+.cat-body { display: none; }
+
+/* ─── TOTAL ROW ─── */
+.total-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 10px 4px; margin-top: 6px;
+  border-top: 2px solid var(--teal);
+  font-size: 13px; font-weight: 700;
+}
+.total-row .lbl { color: var(--ink); }
+.total-row .val {
+  font-family: 'DM Mono', monospace;
+  font-size: 17px; font-weight: 700; color: var(--teal-dark);
+}
+.total-row .val.income { color: var(--green); }
+.total-row .val.expense { color: var(--orange-dk); }
+
+/* ─── ADD BUTTON ─── */
+.btn-add {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; width: 100%; padding: 10px; margin-top: 8px;
+  border: 1.5px dashed var(--border); border-radius: 10px;
+  background: transparent; color: var(--teal);
+  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-add:hover { background: rgba(15,139,141,0.06); border-color: var(--teal); }
+.btn-add span { font-size: 16px; font-weight: 700; }
+
+/* ─── INLINE FORM ─── */
+.inline-form {
+  margin-top: 8px; padding: 12px;
+  border: 1.5px solid var(--teal); border-radius: 10px;
+  background: var(--mint);
+}
+.inline-form .form-btns { display: flex; gap: 6px; margin-top: 8px; }
+
+/* ─── KPI CARDS ─── */
+.kpi-hero {
+  text-align: center; padding: 14px 10px;
+  border-radius: 12px; margin-bottom: 8px; color: #fff;
+}
+.kpi-hero-label {
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: rgba(255,255,255,0.75); margin-bottom: 5px;
+}
+.kpi-hero-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 26px; font-weight: 700; letter-spacing: -1px;
+}
+.kpi-hero-sub { font-size: 9px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+.kpi-grid-2 {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px;
+}
+.kpi-card {
+  text-align: center; padding: 10px 6px; background: var(--white);
+  border-radius: 10px; border: 2px solid var(--border-lt);
+}
+.kpi-card-label {
+  font-size: 9px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.8px;
+  color: var(--ink-muted); margin-bottom: 3px;
+}
+.kpi-card-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 17px; font-weight: 700; color: var(--teal-dark);
+}
+
+/* ─── STATUS INDICATOR ─── */
+.status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 10px; border-radius: 20px;
+  font-size: 10px; font-weight: 700; margin: 3px 0;
+}
+.status-badge.bueno   { background: var(--green-lt); color: var(--green); }
+.status-badge.alerta  { background: var(--orange-lt); color: #a04c00; }
+.status-badge.peligro { background: var(--red-lt); color: var(--red); }
+
+/* ─── RATIO BAR ─── */
+.ratio-item { margin-bottom: 8px; }
+.ratio-item:last-child { margin-bottom: 0; }
+.ratio-header {
+  display: flex; justify-content: space-between;
+  font-size: 9px; font-weight: 600; color: var(--ink-soft); margin-bottom: 3px;
+}
+.ratio-bar-wrap { margin-bottom: 1px; }
+.ratio-bar {
+  height: 6px; background: var(--border-lt);
+  border-radius: 4px; overflow: hidden; position: relative;
+}
+.ratio-bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.ratio-bar-marker {
+  position: absolute; top: -2px; bottom: -2px;
+  width: 2px; background: var(--ink); border-radius: 1px; opacity: 0.5;
+}
+.ratio-note {
+  font-size: 8px; color: var(--ink-muted);
+  margin-top: 1px; display: flex; align-items: center; gap: 3px;
+}
+
+/* ─── RESULT BLOCKS ─── */
+.res-block {
+  background: var(--white); border-radius: 12px; padding: 12px 10px;
+  margin-bottom: 8px; border: 3px solid var(--border-lt);
+  box-shadow: 0 2px 8px rgba(15,139,141,0.06);
+}
+.res-block-title {
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--teal); margin-bottom: 8px;
+  padding-bottom: 6px; border-bottom: 1px solid var(--border-lt);
+}
+.res-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 4px 0; border-bottom: 1px solid var(--border-lt); gap: 6px;
+}
+.res-row:last-child { border-bottom: none; }
+.res-row .lbl { font-size: 11px; color: var(--ink-soft); flex: 1; line-height: 1.3; }
+.res-row .lbl small { display: block; font-size: 9px; color: var(--ink-muted); }
+.res-row .val {
+  font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500;
+  color: var(--ink); white-space: nowrap;
+}
+.res-row.hi .lbl { font-weight: 700; color: var(--ink); font-size: 12px; }
+.res-row.hi .val { font-size: 14px; font-weight: 700; color: var(--teal-dark); }
+.res-row.total-row-res {
+  margin-top: 4px; padding-top: 8px;
+  border-top: 2px solid var(--teal); border-bottom: none;
+}
+.res-row.total-row-res .lbl { font-size: 12px; font-weight: 700; color: var(--ink); }
+.res-row.total-row-res .val { font-size: 15px; font-weight: 700; color: var(--teal-dark); }
+
+/* section separator */
+.sec-divider {
+  border: none;
+  border-top: 2px dashed var(--border);
+  margin: 14px 0;
+}
+
+/* ─── CHARTS SECTION ─── */
+.charts-section { max-width: 100%; padding: 0 14px 24px; }
+.charts-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; }
+.chart-panel {
+  background: var(--white); border-radius: 12px; padding: 16px;
+  border: 2px solid var(--border-lt);
+  box-shadow: 0 2px 8px rgba(15,139,141,0.06);
+}
+.chart-panel-title {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.8px; color: var(--teal-dark);
+  margin-bottom: 12px; text-align: center;
+}
+.chart-donut-wrap { display: flex; flex-direction: column; align-items: center; }
+.chart-legend { margin-top: 6px; font-size: 10px; width: 100%; }
+.chart-legend-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 2px 0;
+}
+.chart-legend-color {
+  display: inline-block; width: 9px; height: 9px;
+  border-radius: 2px; margin-right: 5px;
+}
+
+/* Bars chart */
+.bar-chart-area { width: 100%; }
+.bar-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.bar-label {
+  width: 85px; min-width: 0; font-size: 9px; font-weight: 500;
+  color: var(--ink-soft); text-align: right;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.bar-track {
+  flex: 1; height: 16px; background: var(--border-lt);
+  border-radius: 3px; overflow: hidden; position: relative;
+}
+.bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; min-width: 2px; }
+.bar-val {
+  width: 65px; font-family: 'DM Mono', monospace;
+  font-size: 9px; font-weight: 500; color: var(--ink-soft); text-align: right;
+}
+
+/* ─── Subtle ─── */
+.muted { color: var(--ink-muted); font-size: 11px; }
+.mono { font-family: 'DM Mono', monospace; }
+
+/* ═══════════════════════════════════════════
+   MOBILE — max-width: 768px
+   ═══════════════════════════════════════════ */
+@media (max-width: 768px) {
+  html, body { font-size: 14px; height: auto; }
+
+  .site-header { flex-wrap: wrap; padding: 10px 12px; gap: 6px; }
+  .header-left { order: 1; width: 100%; justify-content: center; }
+  .header-right { order: 2; width: 100%; justify-content: center; }
+  .header-title { font-size: 15px; }
+
+  .four-cols { grid-template-columns: 1fr !important; min-height: auto; }
+  .col {
+    border-right: none !important; border-bottom: 3px solid var(--border-lt);
+    padding: 12px 10px 20px; overflow-y: visible;
+  }
+  .col:last-child { border-bottom: none; }
+
+  .charts-grid { grid-template-columns: 1fr; gap: 14px; }
+  .charts-section { padding: 0 6px 16px; }
+
+  .kpi-grid-2 { grid-template-columns: 1fr 1fr; }
+  .kpi-hero-val { font-size: 22px; }
+
+  .field input[type=number],
+  .field input[type=text],
+  .field select { font-size: 16px; padding: 10px 12px; }
+
+  .btn-header { font-size: 11px; padding: 7px 12px; }
+  .col-title { font-size: 15px; }
+  .item-name { font-size: 13px; }
+  .item-amount { font-size: 13px; }
+  .cat-name { font-size: 13px; }
+  .cat-total { font-size: 14px; }
+  .bar-label { width: 65px; font-size: 8px; }
+  .bar-val { width: 55px; font-size: 8px; }
+  .res-row .lbl { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HEADER ═══════════ -->
+<header class="site-header">
+  <div class="header-left">
+    <span class="header-icon">💰</span>
+    <span class="header-title">Gestor de gastos</span>
+  </div>
+  <div class="header-right">
+    <button class="btn-header" onclick="importarDatos()">📂 Importar</button>
+    <button class="btn-header" onclick="exportarDatos()">💾 Exportar</button>
+  </div>
+</header>
+
+<!-- ═══════════ FOUR COLUMNS ═══════════ -->
+<div class="four-cols" id="mainGrid">
+
+  <!-- ══ COL 1: INGRESOS ══ -->
+  <div class="col" id="col1">
+    <div class="col-title">💵 Ingresos Mensuales</div>
+
+    <div class="sec">
+      <div class="sec-title"><span class="icon">💼</span> Fuentes de ingreso</div>
+      <div id="listaIngresos"></div>
+      <div class="total-row">
+        <span class="lbl">Total ingresos / mes</span>
+        <span class="val income" id="totalIngresos">0 €</span>
+      </div>
+      <button class="btn-add" onclick="mostrarFormIngreso()">
+        <span>+</span> Añadir ingreso
+      </button>
+      <div id="formIngreso" class="inline-form" style="display:none;">
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" id="fiNombre" placeholder="ej. Salario">
+        </div>
+        <div class="field">
+          <label>Importe mensual</label>
+          <div class="input-wrap"><span class="suf">€</span>
+            <input type="number" id="fiImporte" value="0" min="0">
+          </div>
+        </div>
+        <div class="field">
+          <label>Categoría</label>
+          <select id="fiCat">
+            <option value="trabajo">Trabajo</option>
+            <option value="extra">Freelance / Extra</option>
+            <option value="pasivo">Ingresos pasivos</option>
+            <option value="otro">Otros</option>
+          </select>
+        </div>
+        <div class="chk-row">
+          <input type="checkbox" id="fiPagas14">
+          <label style="margin:0;text-transform:none;letter-spacing:0;font-size:11px;">¿Cobras 14 pagas al año?</label>
+        </div>
+        <div class="form-btns">
+          <button class="btn-header" onclick="confirmarIngreso()" style="flex:1;">Añadir</button>
+          <button class="btn-header" onclick="cancelarForm('formIngreso')" style="flex:1;background:#e0e0e0;color:var(--ink-soft);">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ COL 2: GASTOS FIJOS ══ -->
+  <div class="col" id="col2">
+    <div class="col-title">🏠 Gastos Fijos</div>
+
+    <div class="sec">
+      <div class="sec-title"><span class="icon">📋</span> Todos los gastos fijos</div>
+      <div id="listaGastosFijos"></div>
+      <div class="total-row">
+        <span class="lbl">Total gastos fijos</span>
+        <span class="val expense" id="totalFijos">0 €</span>
+      </div>
+      <button class="btn-add" onclick="mostrarFormGasto('fijo')">
+        <span>+</span> Añadir gasto fijo
+      </button>
+      <div id="formFijo" class="inline-form" style="display:none;">
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" id="ffNombre" placeholder="ej. Alquiler">
+        </div>
+        <div class="field">
+          <label>Categoría</label>
+          <select id="ffCat">
+            <option value="vivienda">Vivienda</option>
+            <option value="suministros">Suministros</option>
+            <option value="internet">Internet / Móvil</option>
+            <option value="seguros">Seguros</option>
+            <option value="prestamos">Préstamos</option>
+            <option value="suscripciones">Suscripciones</option>
+            <option value="deporte">Deporte</option>
+            <option value="transporte">Transporte fijo</option>
+            <option value="otro">Otros</option>
+          </select>
+        </div>
+        <div class="chk-row">
+          <input type="checkbox" id="ffEsAnual" onchange="toggleImporteAnual('ff')">
+          <label style="margin:0;text-transform:none;letter-spacing:0;font-size:11px;">¿Es un pago anual? (prorratear a 12 meses)</label>
+        </div>
+        <div class="field" id="ffFieldMensual">
+          <label>Importe mensual</label>
+          <div class="input-wrap"><span class="suf">€</span>
+            <input type="number" id="ffImporte" value="0" min="0">
+          </div>
+        </div>
+        <div class="field" id="ffFieldAnual" style="display:none;">
+          <label>Importe anual</label>
+          <div class="input-wrap"><span class="suf">€</span>
+            <input type="number" id="ffImporteAnual" value="0" min="0" oninput="actualizarEquivMensual('ff')">
+          </div>
+          <span class="muted" style="display:block;margin-top:2px;">Equivale a <strong id="ffEquivMensual">0 €</strong>/mes</span>
+        </div>
+        <div class="form-btns">
+          <button class="btn-header" onclick="confirmarGasto('fijo')" style="flex:1;">Añadir</button>
+          <button class="btn-header" onclick="cancelarForm('formFijo')" style="flex:1;background:#e0e0e0;color:var(--ink-soft);">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ COL 3: GASTOS VARIABLES ══ -->
+  <div class="col" id="col3">
+    <div class="col-title">🛒 Gastos Variables</div>
+
+    <div class="sec">
+      <div class="sec-title"><span class="icon">📌</span> Gastos variables mensuales</div>
+      <div id="listaGastosVariables"></div>
+      <div class="total-row">
+        <span class="lbl">Total variables</span>
+        <span class="val expense" id="totalVariables">0 €</span>
+      </div>
+      <button class="btn-add" onclick="mostrarFormGasto('variable')">
+        <span>+</span> Añadir gasto variable
+      </button>
+      <div id="formVariable" class="inline-form" style="display:none;">
+        <div class="field">
+          <label>Nombre</label>
+          <input type="text" id="fvNombre" placeholder="ej. Alimentación">
+        </div>
+        <div class="field">
+          <label>Importe mensual</label>
+          <div class="input-wrap"><span class="suf">€</span>
+            <input type="number" id="fvImporte" value="0" min="0">
+          </div>
+        </div>
+        <div class="field">
+          <label>Categoría</label>
+          <select id="fvCat">
+            <option value="alimentacion">Alimentación</option>
+            <option value="restaurantes">Restaurantes</option>
+            <option value="transporte">Transporte</option>
+            <option value="ocio">Ocio</option>
+            <option value="compras">Compras</option>
+            <option value="salud">Salud</option>
+            <option value="educacion">Educación</option>
+            <option value="viajes">Viajes</option>
+            <option value="regalos">Regalos</option>
+            <option value="otro">Otros</option>
+          </select>
+        </div>
+        <div class="form-btns">
+          <button class="btn-header" onclick="confirmarGasto('variable')" style="flex:1;">Añadir</button>
+          <button class="btn-header" onclick="cancelarForm('formVariable')" style="flex:1;background:#e0e0e0;color:var(--ink-soft);">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ COL 4: RESUMEN ══ -->
+  <div class="col col-result" id="col4">
+    <div class="col-title" style="font-size:16px;font-weight:800;letter-spacing:0.8px;padding:10px 0;margin-bottom:12px;background:var(--teal-dark);color:var(--mint);border-radius:10px;text-align:center;">Resumen</div>
+
+    <!-- ─── MENSUAL ─── -->
+    <div class="res-block" style="border-color:var(--teal);">
+      <div class="res-block-title">📆 Mensual</div>
+      <div class="kpi-hero" id="kpiHero">
+        <div class="kpi-hero-label">Balance mensual</div>
+        <div class="kpi-hero-val" id="balanceHero">0 €</div>
+        <div class="kpi-hero-sub" id="balanceSub"></div>
+      </div>
+      <div class="kpi-grid-2" id="kpiCards"></div>
+      <div id="regla333333"></div>
+    </div>
+
+    <!-- ─── ANUAL ─── -->
+    <div class="res-block" style="border-color:var(--teal-dark);">
+      <div class="res-block-title">📅 Anual</div>
+      <div id="annualSummary"></div>
+    </div>
+  </div>
+
+</div><!-- /four-cols -->
+
+<!-- ═══════════ CHARTS SECTION ═══════════ -->
+<div class="charts-section">
+  <div class="charts-grid">
+    <div class="chart-panel">
+      <div class="chart-panel-title">🍩 Distribución de Gastos</div>
+      <div class="chart-donut-wrap">
+        <svg id="donutChart" width="220" height="220" viewBox="0 0 260 260"></svg>
+      </div>
+      <div class="chart-legend" id="donutLegend"></div>
+    </div>
+
+    <div class="chart-panel">
+      <div class="chart-panel-title">📊 Gastos por Categoría</div>
+      <div class="bar-chart-area" id="barChart"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════ STATE ══════════════
+let ingresos = [
+  { id: 'i1', nombre: 'Salario', importe: 2000, categoria: 'trabajo', pagas: 12 },
+  { id: 'i2', nombre: 'Freelance', importe: 500, categoria: 'extra', pagas: 12 },
+];
+let gastosFijos = [
+  { id: 'f1', nombre: 'Alquiler', importe: 400, categoria: 'vivienda', esAnual: false },
+  { id: 'f2', nombre: 'Electricidad', importe: 50, categoria: 'suministros', esAnual: false },
+  { id: 'f3', nombre: 'Agua', importe: 25, categoria: 'suministros', esAnual: false },
+  { id: 'f4', nombre: 'Internet + Móvil', importe: 30, categoria: 'internet', esAnual: false },
+  { id: 'f6', nombre: 'Seguro hogar', importe: 35, categoria: 'seguros', esAnual: false },
+  { id: 'f7', nombre: 'Seguro coche', importe: 41.67, categoria: 'seguros', esAnual: true, importeAnual: 500 },
+  { id: 'f8', nombre: 'Préstamo coche', importe: 200, categoria: 'prestamos', esAnual: false },
+  { id: 'f9', nombre: 'Gimnasio', importe: 40, categoria: 'deporte', esAnual: false },
+  { id: 'f10', nombre: 'Netflix', importe: 17.99, categoria: 'suscripciones', esAnual: false },
+  { id: 'f11', nombre: 'Spotify', importe: 10.99, categoria: 'suscripciones', esAnual: false },
+  { id: 'f12', nombre: 'Prime', importe: 4.99, categoria: 'suscripciones', esAnual: false },
+];
+let gastosVariables = [
+  { id: 'v1', nombre: 'Alimentación', importe: 200, categoria: 'alimentacion' },
+  { id: 'v2', nombre: 'Restaurantes', importe: 50, categoria: 'restaurantes' },
+  { id: 'v3', nombre: 'Gasolina', importe: 100, categoria: 'transporte' },
+  { id: 'v4', nombre: 'Ocio', importe: 120, categoria: 'ocio' },
+  { id: 'v5', nombre: 'Ropa', importe: 80, categoria: 'compras' },
+];
+let nextId = 100;
+
+// ══════════════ HELPERS ══════════════
+const fmt = (n, d=2) => new Intl.NumberFormat('es-ES',{minimumFractionDigits:d,maximumFractionDigits:d}).format(n);
+const fmtE = (n, d=0) => fmt(n,d) + ' €';
+function uid() { return 'it_' + (nextId++); }
+
+// ══════════════ CATEGORY METADATA ══════════════
+const catColors = {
+  trabajo:'#0f8b8d', extra:'#0a5c5e', pasivo:'#3d5e60',
+  vivienda:'#0a5c5e', suministros:'#0f8b8d', internet:'#3d5e60',
+  seguros:'#6a8c8e', prestamos:'#d4620b', suscripciones:'#7c3aed',
+  deporte:'#0891b2',
+  alimentacion:'#d4620b', restaurantes:'#e67e22', transporte:'#f97316',
+  ocio:'#e8983e', compras:'#f0b86e', salud:'#e74c3c',
+  educacion:'#8e44ad', viajes:'#2ecc71', regalos:'#e91e63', otro:'#95a5a6',
+};
+const catNombres = {
+  trabajo:'Trabajo', extra:'Extra', pasivo:'Pasivo',
+  vivienda:'Vivienda', suministros:'Suministros', internet:'Internet/Móvil',
+  seguros:'Seguros', prestamos:'Préstamos', suscripciones:'Suscripciones',
+  deporte:'Deporte',
+  alimentacion:'Alimentación', restaurantes:'Restaurantes', transporte:'Transporte',
+  ocio:'Ocio', compras:'Compras', salud:'Salud', educacion:'Educación',
+  viajes:'Viajes', regalos:'Regalos', otro:'Otros',
+};
+const catIconos = {
+  vivienda:'🏠', suministros:'⚡', internet:'🌐', seguros:'🛡️',
+  prestamos:'🏦', suscripciones:'📺', deporte:'🏋️', transporte:'🚗',
+  alimentacion:'🛒', restaurantes:'🍽️', ocio:'🎮', compras:'👕',
+  salud:'💊', educacion:'📚', viajes:'✈️', regalos:'🎁', otro:'📌',
+};
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ══════════════ RENDER COLLAPSIBLE CATEGORY GROUPS ══════════════
+function renderGrupos(containerId, items, tipo, totalId) {
+  const cont = document.getElementById(containerId);
+  const totalEl = document.getElementById(totalId);
+  if (!cont) return;
+
+  const total = items.reduce((s, it) => s + it.importe, 0);
+  if (totalEl) {
+    totalEl.textContent = fmtE(total);
+    totalEl.className = 'val ' + (tipo === 'ingreso' ? 'income' : 'expense');
+  }
+
+  if (items.length === 0) {
+    cont.innerHTML = '<p class="muted" style="text-align:center;padding:12px 0;">Sin elementos. Añade uno con el botón +</p>';
+    return;
+  }
+
+  // Group by category
+  const grupos = new Map();
+  items.forEach(it => {
+    const cat = it.categoria;
+    if (!grupos.has(cat)) grupos.set(cat, []);
+    grupos.get(cat).push(it);
+  });
+
+  // Sort groups by total (descending)
+  const sorted = [...grupos.entries()].sort((a, b) => {
+    const totA = a[1].reduce((s, it) => s + it.importe, 0);
+    const totB = b[1].reduce((s, it) => s + it.importe, 0);
+    return totB - totA;
+  });
+
+  let html = '';
+  sorted.forEach(([cat, catItems]) => {
+    const catTotal = catItems.reduce((s, it) => s + it.importe, 0);
+    const catNombre = catNombres[cat] || cat;
+    const catIcono = catIconos[cat] || '📌';
+    const catId = 'cat_' + (tipo === 'fijo' ? 'f_' : 'v_') + cat;
+    const isSubs = cat === 'suscripciones';
+    const subsCls = isSubs ? ' suscripciones' : '';
+
+    html += `<div class="cat-group${subsCls}">
+      <div class="cat-header" onclick="toggleCat('${catId}', this)">
+        <span class="cat-arrow" id="${catId}_arrow">▶</span>
+        <span class="cat-icon">${catIcono}</span>
+        <span class="cat-name">${catNombre}</span>
+        <span class="cat-badge">${catItems.length}</span>
+        <span class="cat-total">${fmtE(catTotal)}</span>
+      </div>
+      <div class="cat-body" id="${catId}">`;
+
+    catItems.forEach(it => {
+      const esProrr = it.esAnual && it.importeAnual;
+      const prorrCls = esProrr ? ' prorrateado' : '';
+      const amtCls = esProrr ? ' prorr' : '';
+      let tags = '';
+      if (esProrr) tags += '<span class="item-tag prorr">prorrateado</span>';
+      let titleAttr = '';
+      if (esProrr) titleAttr = ` title="Pago anual: ${fmtE(it.importeAnual,0)} → ${fmtE(it.importe,2)}/mes"`;
+
+      html += `<div class="item-row${prorrCls}"${titleAttr}>
+        <div class="item-info">
+          <div class="item-name">${escHtml(it.nombre)}${tags}</div>
+        </div>
+        <span class="item-amount expense${amtCls}">${fmtE(it.importe)}</span>
+        <div class="item-btns">
+          <button onclick="event.stopPropagation();editarItem('${it.id}','${tipo}')" title="Editar">✎</button>
+          <button class="del" onclick="event.stopPropagation();eliminarItem('${it.id}','${tipo}')" title="Eliminar">✕</button>
+        </div>
+      </div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  cont.innerHTML = html;
+}
+
+// ══════════════ RENDER INGRESOS (flat list) ══════════════
+function renderIngresos() {
+  const cont = document.getElementById('listaIngresos');
+  const totalEl = document.getElementById('totalIngresos');
+  if (!cont) return;
+
+  const total = ingresos.reduce((s, it) => s + it.importe, 0);
+  if (totalEl) {
+    totalEl.textContent = fmtE(total);
+    totalEl.className = 'val income';
+  }
+
+  if (ingresos.length === 0) {
+    cont.innerHTML = '<p class="muted" style="text-align:center;padding:12px 0;">Sin ingresos. Añade uno con el botón +</p>';
+    return;
+  }
+
+  let html = '';
+  ingresos.forEach(it => {
+    let tags = '';
+    let titleAttr = '';
+    if (it.pagas === 14) {
+      tags += '<span class="item-tag pagas14">14 pagas</span>';
+      titleAttr = ` title="${fmtE(it.importe,0)}/mes × 14 pagas = ${fmtE(it.importe * 14, 0)}/año"`;
+    }
+
+    html += `<div class="item-row"${titleAttr}>
+      <div class="item-info">
+        <div class="item-name">${escHtml(it.nombre)}${tags}</div>
+        <div class="item-cat">${catNombres[it.categoria] || it.categoria}</div>
+      </div>
+      <span class="item-amount income">${fmtE(it.importe)}</span>
+      <div class="item-btns">
+        <button onclick="editarItem('${it.id}','ingreso')" title="Editar">✎</button>
+        <button class="del" onclick="eliminarItem('${it.id}','ingreso')" title="Eliminar">✕</button>
+      </div>
+    </div>`;
+  });
+  cont.innerHTML = html;
+}
+
+function toggleCat(catId, headerEl) {
+  const body = document.getElementById(catId);
+  const arrow = document.getElementById(catId + '_arrow');
+  if (!body || !arrow) return;
+  const isOpen = body.style.display === 'block';
+  body.style.display = isOpen ? 'none' : 'block';
+  arrow.classList.toggle('open', !isOpen);
+}
+
+// ══════════════ TOGGLE IMPORTE ANUAL ══════════════
+function toggleImporteAnual(prefix) {
+  const chk = document.getElementById(prefix + 'EsAnual');
+  const fieldMen = document.getElementById(prefix + 'FieldMensual');
+  const fieldAnu = document.getElementById(prefix + 'FieldAnual');
+  if (!chk || !fieldMen || !fieldAnu) return;
+  if (chk.checked) {
+    fieldMen.style.display = 'none';
+    fieldAnu.style.display = '';
+    actualizarEquivMensual(prefix);
+  } else {
+    fieldMen.style.display = '';
+    fieldAnu.style.display = 'none';
+  }
+}
+
+function actualizarEquivMensual(prefix) {
+  const importeAnual = parseFloat(document.getElementById(prefix + 'ImporteAnual')?.value) || 0;
+  const equivEl = document.getElementById(prefix + 'EquivMensual');
+  if (equivEl) equivEl.textContent = fmtE(importeAnual / 12, 2);
+}
+
+// ══════════════ CRUD ══════════════
+function mostrarFormIngreso() {
+  document.getElementById('fiNombre').value = '';
+  document.getElementById('fiImporte').value = '0';
+  document.getElementById('fiCat').value = 'trabajo';
+  document.getElementById('fiPagas14').checked = false;
+  document.getElementById('formIngreso').style.display = '';
+  document.getElementById('formIngreso').dataset.editing = '';
+}
+
+function confirmarIngreso() {
+  const nombre = document.getElementById('fiNombre').value.trim();
+  const importe = parseFloat(document.getElementById('fiImporte').value) || 0;
+  const categoria = document.getElementById('fiCat').value;
+  const pagas14 = document.getElementById('fiPagas14').checked;
+  if (!nombre) return;
+  const editId = document.getElementById('formIngreso').dataset.editing;
+  if (editId) {
+    const idx = ingresos.findIndex(it => it.id === editId);
+    if (idx >= 0) ingresos[idx] = { ...ingresos[idx], nombre, importe, categoria, pagas: pagas14 ? 14 : 12 };
+  } else {
+    ingresos.push({ id: uid(), nombre, importe, categoria, pagas: pagas14 ? 14 : 12 });
+  }
+  document.getElementById('formIngreso').style.display = 'none';
+  calcularTodo();
+}
+
+function mostrarFormGasto(tipo) {
+  const prefix = tipo === 'fijo' ? 'ff' : 'fv';
+  const formId = tipo === 'fijo' ? 'formFijo' : 'formVariable';
+  document.getElementById(prefix + 'Nombre').value = '';
+  document.getElementById(prefix + 'Importe').value = '0';
+  document.getElementById(prefix + 'Cat').value = tipo === 'fijo' ? 'vivienda' : 'alimentacion';
+  if (tipo === 'fijo') {
+    document.getElementById('ffEsAnual').checked = false;
+    document.getElementById('ffImporteAnual').value = '0';
+    toggleImporteAnual('ff');
+  }
+  document.getElementById(formId).style.display = '';
+  document.getElementById(formId).dataset.editing = '';
+}
+
+function confirmarGasto(tipo) {
+  const prefix = tipo === 'fijo' ? 'ff' : 'fv';
+  const formId = tipo === 'fijo' ? 'formFijo' : 'formVariable';
+  const lista = tipo === 'fijo' ? gastosFijos : gastosVariables;
+  const nombre = document.getElementById(prefix + 'Nombre').value.trim();
+  const categoria = document.getElementById(prefix + 'Cat').value;
+  if (!nombre) return;
+
+  let importe, esAnual = false, importeAnual = null;
+  if (tipo === 'fijo') {
+    esAnual = document.getElementById('ffEsAnual').checked;
+    if (esAnual) {
+      importeAnual = parseFloat(document.getElementById('ffImporteAnual').value) || 0;
+      importe = importeAnual / 12;
+    } else {
+      importe = parseFloat(document.getElementById('ffImporte').value) || 0;
+    }
+  } else {
+    importe = parseFloat(document.getElementById(prefix + 'Importe').value) || 0;
+  }
+
+  const editId = document.getElementById(formId).dataset.editing;
+  if (editId) {
+    const idx = lista.findIndex(it => it.id === editId);
+    if (idx >= 0) lista[idx] = { ...lista[idx], nombre, importe, categoria, esAnual, importeAnual };
+  } else {
+    lista.push({ id: uid(), nombre, importe, categoria, esAnual, importeAnual });
+  }
+  document.getElementById(formId).style.display = 'none';
+  calcularTodo();
+}
+
+function cancelarForm(formId) {
+  document.getElementById(formId).style.display = 'none';
+}
+
+function editarItem(id, tipo) {
+  if (tipo === 'ingreso') {
+    const item = ingresos.find(it => it.id === id);
+    if (!item) return;
+    document.getElementById('fiNombre').value = item.nombre;
+    document.getElementById('fiImporte').value = item.importe;
+    document.getElementById('fiCat').value = item.categoria;
+    document.getElementById('fiPagas14').checked = (item.pagas || 12) === 14;
+    document.getElementById('formIngreso').style.display = '';
+    document.getElementById('formIngreso').dataset.editing = id;
+  } else {
+    const lista = tipo === 'fijo' ? gastosFijos : gastosVariables;
+    const prefix = tipo === 'fijo' ? 'ff' : 'fv';
+    const formId = tipo === 'fijo' ? 'formFijo' : 'formVariable';
+    const item = lista.find(it => it.id === id);
+    if (!item) return;
+    document.getElementById(prefix + 'Nombre').value = item.nombre;
+    document.getElementById(prefix + 'Cat').value = item.categoria;
+    if (tipo === 'fijo') {
+      document.getElementById('ffEsAnual').checked = !!item.esAnual;
+      if (item.esAnual) {
+        document.getElementById('ffImporteAnual').value = item.importeAnual || (item.importe * 12);
+      } else {
+        document.getElementById('ffImporte').value = item.importe;
+      }
+      toggleImporteAnual('ff');
+      if (item.esAnual) actualizarEquivMensual('ff');
+    } else {
+      document.getElementById(prefix + 'Importe').value = item.importe;
+    }
+    document.getElementById(formId).style.display = '';
+    document.getElementById(formId).dataset.editing = id;
+  }
+}
+
+function eliminarItem(id, tipo) {
+  if (tipo === 'ingreso') {
+    ingresos = ingresos.filter(it => it.id !== id);
+  } else if (tipo === 'fijo') {
+    gastosFijos = gastosFijos.filter(it => it.id !== id);
+  } else {
+    gastosVariables = gastosVariables.filter(it => it.id !== id);
+  }
+  calcularTodo();
+}
+
+// ══════════════ MAIN CALC ══════════════
+function calcularTodo() {
+  const totIng = ingresos.reduce((s,it) => s + it.importe, 0);
+  const totFijos = gastosFijos.reduce((s,it) => s + it.importe, 0);
+  const totVar = gastosVariables.reduce((s,it) => s + it.importe, 0);
+  const totGastos = totFijos + totVar;
+  const balance = totIng - totGastos;
+  const pctAhorro = totIng > 0 ? (balance / totIng * 100) : 0;
+  const pctGastos = totIng > 0 ? (totGastos / totIng * 100) : 0;
+
+  // Render
+  renderIngresos();
+  renderGrupos('listaGastosFijos', gastosFijos, 'fijo', 'totalFijos');
+  renderGrupos('listaGastosVariables', gastosVariables, 'variable', 'totalVariables');
+
+  // KPIs
+  renderKPIHero(balance, pctAhorro);
+  renderKPICards(totIng, totGastos, totFijos, totVar, balance, pctAhorro);
+  renderRegla333333(totIng, gastosFijos, gastosVariables, balance);
+
+  // Charts
+  renderDonutChart(totFijos, totVar, gastosFijos, gastosVariables, totGastos);
+  renderBarChart(gastosFijos, gastosVariables, totGastos);
+
+  // Annual
+  renderResumenAnual();
+}
+
+// ══════════════ KPI HERO ══════════════
+function renderKPIHero(balance, pctAhorro) {
+  const el = document.getElementById('kpiHero');
+  const valEl = document.getElementById('balanceHero');
+  const subEl = document.getElementById('balanceSub');
+  valEl.textContent = (balance >= 0 ? '+' : '') + fmtE(balance, 0);
+  valEl.style.color = balance >= 0 ? '#fff' : '#ffcccb';
+  el.style.background = balance >= 0 ? 'var(--teal)' : 'var(--red)';
+  subEl.textContent = balance >= 0
+    ? 'Ahorras ' + fmt(pctAhorro, 1) + '% de tus ingresos'
+    : 'Tus gastos superan los ingresos';
+}
+
+// ══════════════ KPI CARDS ══════════════
+function renderKPICards(totIng, totGastos, totFijos, totVar, balance, pctAhorro) {
+  const el = document.getElementById('kpiCards');
+  const cards = [
+    { label: 'Ingresos', val: fmtE(totIng, 0), cls: '' },
+    { label: 'Gastos totales', val: fmtE(totGastos, 0), cls: '' },
+    { label: 'Ahorro', val: fmt(pctAhorro, 1) + '%', cls: pctAhorro >= 33 ? '' : (pctAhorro >= 20 ? 'alerta' : 'peligro') },
+    { label: 'Fijos / Ingresos', val: fmt(totIng > 0 ? totFijos/totIng*100 : 0, 1) + '%', cls: '' },
+  ];
+  el.innerHTML = cards.map(c =>
+    `<div class="kpi-card" style="${c.cls === 'alerta' ? 'border-color:var(--orange);' : c.cls === 'peligro' ? 'border-color:var(--red);' : ''}">
+      <div class="kpi-card-label">${c.label}</div>
+      <div class="kpi-card-val" style="${c.cls === 'alerta' ? 'color:var(--orange-dk);' : c.cls === 'peligro' ? 'color:var(--red);' : ''}">${c.val}</div>
+    </div>`
+  ).join('');
+}
+
+// ══════════════ REGLA 33/33/33 ══════════════
+function renderRegla333333(totIng, gastosFijos, gastosVariables, balance) {
+  const el = document.getElementById('regla333333');
+  if (!el) return;
+  if (totIng <= 0) {
+    el.innerHTML = '<p class="muted" style="margin-top:8px;">Añade ingresos para ver la regla 33/33/33.</p>';
+    return;
+  }
+
+  // Necesidades: vivienda, suministros, internet, seguros, préstamos, transporte fijo
+  const catNecesidades = ['vivienda','suministros','internet','seguros','prestamos','transporte'];
+  const necesidades = gastosFijos
+    .filter(g => catNecesidades.includes(g.categoria))
+    .reduce((s, g) => s + g.importe, 0);
+
+  // Deseos: suscripciones, deporte + TODOS los gastos variables
+  const catDeseosFijos = ['suscripciones','deporte'];
+  const deseosFijos = gastosFijos
+    .filter(g => catDeseosFijos.includes(g.categoria))
+    .reduce((s, g) => s + g.importe, 0);
+  const deseosVar = gastosVariables.reduce((s, g) => s + g.importe, 0);
+  const deseos = deseosFijos + deseosVar;
+
+  // Ahorro
+  const ahorro = Math.max(0, balance);
+
+  const pctNecesidades = totIng > 0 ? necesidades / totIng * 100 : 0;
+  const pctDeseos = totIng > 0 ? deseos / totIng * 100 : 0;
+  const pctAhorro = totIng > 0 ? ahorro / totIng * 100 : 0;
+
+  function ratioBarGasto(label, pct, target, importe) {
+    // For expenses: staying under target is good
+    const ok = pct <= target;
+    const ratio = pct / target;
+    const fillW = Math.min(pct, 100);
+    let color, emoji;
+    if (ok) {
+      color = 'var(--green)'; emoji = '✅';
+    } else if (ratio <= 1.25) {
+      color = 'var(--orange)'; emoji = '⚠️';
+    } else {
+      color = 'var(--red)'; emoji = '❌';
+    }
+    return `<div class="ratio-item">
+      <div class="ratio-header">
+        <span>${label}</span>
+        <span style="font-weight:700;color:${ok ? 'var(--green)' : 'var(--orange-dk)'}">${fmt(pct,1)}%</span>
+      </div>
+      <div class="ratio-bar-wrap">
+        <div class="ratio-bar">
+          <div class="ratio-bar-fill" style="width:${fillW}%;background:${color};"></div>
+          <div class="ratio-bar-marker" style="left:${target}%;"></div>
+        </div>
+      </div>
+      <div class="ratio-note">${emoji} ${fmtE(importe, 0)}/mes · objetivo ≤${target}% (máx ${fmtE(totIng * target / 100, 0)})</div>
+    </div>`;
+  }
+
+  function ratioBarAhorro(label, pct, target, importe) {
+    // For savings: reaching target is good (inverse logic)
+    const ok = pct >= target;
+    const fillW = Math.min(pct, 100);
+    let color, emoji;
+    if (ok) {
+      color = 'var(--green)'; emoji = '✅';
+    } else if (pct >= target * 0.60) {
+      color = 'var(--orange)'; emoji = '⚠️';
+    } else {
+      color = 'var(--red)'; emoji = '❌';
+    }
+    return `<div class="ratio-item">
+      <div class="ratio-header">
+        <span>${label}</span>
+        <span style="font-weight:700;color:${ok ? 'var(--green)' : pct >= target*0.60 ? 'var(--orange-dk)' : 'var(--red)'}">${fmt(pct,1)}%</span>
+      </div>
+      <div class="ratio-bar-wrap">
+        <div class="ratio-bar">
+          <div class="ratio-bar-fill" style="width:${fillW}%;background:${color};"></div>
+          <div class="ratio-bar-marker" style="left:${target}%;"></div>
+        </div>
+      </div>
+      <div class="ratio-note">${emoji} ${fmtE(importe, 0)}/mes · objetivo ≥${target}% (mín ${fmtE(totIng * target / 100, 0)})</div>
+    </div>`;
+  }
+
+  let html = '<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border-lt);">';
+  html += '<div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--teal);margin-bottom:8px;">📐 Regla 33/33/33</div>';
+  html += ratioBarGasto('🏠 Vivienda y suministros', pctNecesidades, 33, necesidades);
+  html += ratioBarGasto('🎉 Ocio, suscripciones y comer', pctDeseos, 33, deseos);
+  html += ratioBarAhorro('💰 Ahorro', pctAhorro, 33, ahorro);
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// ══════════════ DONUT CHART ══════════════
+function renderDonutChart(totFijos, totVar, gastosFijos, gastosVariables, totGastos) {
+  const svg = document.getElementById('donutChart');
+  const legend = document.getElementById('donutLegend');
+  if (!svg || totGastos <= 0) {
+    svg.innerHTML = '';
+    legend.innerHTML = '<p class="muted" style="text-align:center;">Añade gastos para ver la distribución.</p>';
+    return;
+  }
+  const cats = {};
+  gastosFijos.forEach(g => {
+    const key = g.categoria;
+    if (!cats[key]) cats[key] = { nombre: catNombres[key] || key, importe: 0, tipo: 'fijo' };
+    cats[key].importe += g.importe;
+  });
+  gastosVariables.forEach(g => {
+    const key = g.categoria;
+    if (!cats[key]) cats[key] = { nombre: catNombres[key] || key, importe: 0, tipo: 'variable' };
+    cats[key].importe += g.importe;
+  });
+
+  let segments = Object.entries(cats).map(([key, val]) => ({ key, ...val }));
+  segments.sort((a, b) => b.importe - a.importe);
+  if (segments.length > 6) {
+    const top = segments.slice(0, 5);
+    const tail = segments.slice(5);
+    const tailTotal = tail.reduce((s, seg) => s + seg.importe, 0);
+    top.push({ key: 'otros', nombre: 'Otros (' + tail.length + ')', importe: tailTotal, tipo: 'otro' });
+    segments = top;
+  }
+
+  const tealSteps = ['#0a5c5e', '#0f8b8d', '#3d5e60', '#6a8c8e'];
+  const warmSteps = ['#d4620b', '#e67e22', '#f97316', '#e8983e', '#f0b86e'];
+  let tealIdx = 0, warmIdx = 0;
+
+  segments.forEach(seg => {
+    if (seg.key === 'suscripciones') {
+      seg.color = '#7c3aed';
+    } else if (seg.tipo === 'fijo') {
+      seg.color = tealSteps[tealIdx % tealSteps.length];
+      tealIdx++;
+    } else if (seg.tipo === 'variable') {
+      seg.color = warmSteps[warmIdx % warmSteps.length];
+      warmIdx++;
+    } else {
+      seg.color = '#95a5a6';
+    }
+  });
+
+  const cx = 130, cy = 130, r = 100, ir = 55;
+  let cumulative = 0, paths = '';
+  segments.forEach(seg => {
+    const sa = (cumulative / totGastos) * 2 * Math.PI - Math.PI / 2;
+    cumulative += seg.importe;
+    const ea = (cumulative / totGastos) * 2 * Math.PI - Math.PI / 2;
+    const x1 = cx + r * Math.cos(sa), y1 = cy + r * Math.sin(sa);
+    const x2 = cx + r * Math.cos(ea), y2 = cy + r * Math.sin(ea);
+    const xi1 = cx + ir * Math.cos(ea), yi1 = cy + ir * Math.sin(ea);
+    const xi2 = cx + ir * Math.cos(sa), yi2 = cy + ir * Math.sin(sa);
+    const la = seg.importe / totGastos > 0.5 ? 1 : 0;
+    paths += `<path d="M ${x1.toFixed(1)} ${y1.toFixed(1)} A ${r} ${r} 0 ${la} 1 ${x2.toFixed(1)} ${y2.toFixed(1)} L ${xi1.toFixed(1)} ${yi1.toFixed(1)} A ${ir} ${ir} 0 ${la} 0 ${xi2.toFixed(1)} ${yi2.toFixed(1)} Z" fill="${seg.color}" opacity="0.85"/>`;
+  });
+
+  svg.innerHTML = paths + `<text x="${cx}" y="${cy - 8}" text-anchor="middle" font-family="'DM Mono',monospace" font-size="20" font-weight="700" fill="var(--teal-dark)">${fmtE(totGastos, 0)}</text>
+    <text x="${cx}" y="${cy + 12}" text-anchor="middle" font-family="'Inter',sans-serif" font-size="10" fill="var(--ink-muted)">total gastos</text>`;
+
+  legend.innerHTML = segments.map(seg => {
+    const pct = seg.importe / totGastos * 100;
+    return `<div class="chart-legend-item">
+      <span><span class="chart-legend-color" style="background:${seg.color};"></span>${seg.nombre}</span>
+      <span class="mono" style="font-size:10px;color:var(--ink-soft);">${fmtE(seg.importe, 0)} (${fmt(pct,1)}%)</span>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════ BAR CHART ══════════════
+function renderBarChart(gastosFijos, gastosVariables, totGastos) {
+  const el = document.getElementById('barChart');
+  if (totGastos <= 0) {
+    el.innerHTML = '<p class="muted" style="text-align:center;padding:20px;">Añade gastos para ver el ranking.</p>';
+    return;
+  }
+  const items = [];
+  gastosFijos.forEach(g => items.push({ ...g, tipo: g.categoria === 'suscripciones' ? 'Suscripción' : 'Fijo' }));
+  gastosVariables.forEach(g => items.push({ ...g, tipo: 'Variable' }));
+  items.sort((a, b) => b.importe - a.importe);
+
+  const maxVal = items[0]?.importe || 1;
+  const tealSteps = ['#0a5c5e', '#0f8b8d', '#1a8f91', '#3d9fa0', '#6aafb0', '#8abfc0', '#a8cfd0', '#c5dfdf'];
+
+  let html = '';
+  items.forEach((it, i) => {
+    const barPct = it.importe / maxVal * 100;
+    let color = tealSteps[Math.min(i, tealSteps.length - 1)];
+    if (it.categoria === 'suscripciones') color = '#7c3aed';
+    if (it.esAnual) color = '#b45309';
+    html += `<div class="bar-row">
+      <div class="bar-label" title="${escHtml(it.nombre)}${it.esAnual ? ' (pago anual prorrateado)' : ''}">${escHtml(it.nombre)}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${barPct}%;background:${color};"></div></div>
+      <div class="bar-val">${fmtE(it.importe, 0)}</div>
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+// ══════════════ ANNUAL SUMMARY ══════════════
+function renderResumenAnual() {
+  const el = document.getElementById('annualSummary');
+  if (!el) return;
+
+  const ingAnual = ingresos.reduce((s, it) => s + it.importe * (it.pagas || 12), 0);
+  const fijosAnual = gastosFijos.reduce((s, it) => s + (it.esAnual ? (it.importeAnual || it.importe * 12) : it.importe * 12), 0);
+  const varAnual = gastosVariables.reduce((s, it) => s + it.importe * 12, 0);
+  const gastosAnual = fijosAnual + varAnual;
+  const balanceAnual = ingAnual - gastosAnual;
+  const pctAhorroAnual = ingAnual > 0 ? (balanceAnual / ingAnual * 100) : 0;
+
+  // Annual KPIs
+  let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">';
+
+  html += `<div style="text-align:center;padding:10px 6px;background:var(--green-lt);border-radius:10px;">
+    <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--green);margin-bottom:3px;">Ingresos año</div>
+    <div class="mono" style="font-size:18px;font-weight:700;color:var(--green);">${fmtE(ingAnual, 0)}</div>
+  </div>`;
+
+  html += `<div style="text-align:center;padding:10px 6px;background:var(--orange-lt);border-radius:10px;">
+    <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--orange-dk);margin-bottom:3px;">Gastos año</div>
+    <div class="mono" style="font-size:18px;font-weight:700;color:var(--orange-dk);">${fmtE(gastosAnual, 0)}</div>
+  </div>`;
+
+  html += '</div>';
+
+  // Balance hero
+  const balanceOk = balanceAnual >= 0;
+  html += `<div style="text-align:center;padding:10px;border-radius:10px;background:${balanceOk ? 'var(--green-lt)' : 'var(--red-lt)'};margin-bottom:8px;">
+    <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:${balanceOk ? 'var(--green)' : 'var(--red)'};margin-bottom:3px;">Ahorro anual</div>
+    <div class="mono" style="font-size:22px;font-weight:700;color:${balanceOk ? 'var(--green)' : 'var(--red)'};">${(balanceAnual >= 0 ? '+' : '') + fmtE(balanceAnual, 0)}</div>
+    <div style="font-size:9px;color:var(--ink-muted);">${fmt(pctAhorroAnual, 1)}% de ingresos</div>
+  </div>`;
+
+  // Collapsible desglose — collapsed by default
+  html += '<div style="margin-top:4px;">';
+
+  // Fijos group
+  const nFijos = gastosFijos.length;
+  html += `<div style="border:1px solid var(--border-lt);border-radius:8px;overflow:hidden;margin-bottom:5px;">
+    <div onclick="toggleCat('anualFijos',this)" style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#f5faf9;cursor:pointer;user-select:none;">
+      <span class="cat-arrow" id="anualFijos_arrow" style="font-size:10px;">▶</span>
+      <span style="flex:1;font-size:11px;font-weight:600;color:var(--ink-soft);">🏠 Gastos fijos</span>
+      <span style="font-size:10px;color:var(--ink-muted);">${nFijos} gastos</span>
+      <span class="mono" style="font-size:12px;font-weight:600;color:var(--orange-dk);">${fmtE(fijosAnual, 0)}</span>
+    </div>
+    <div id="anualFijos" class="cat-body">
+      <div style="padding:6px 10px;">`;
+
+  // Group fijos by category within the collapsible
+  const catsFijos = new Map();
+  gastosFijos.forEach(g => {
+    const cat = g.categoria;
+    if (!catsFijos.has(cat)) catsFijos.set(cat, []);
+    catsFijos.get(cat).push(g);
+  });
+  [...catsFijos.entries()].sort((a,b) => {
+    const ta = a[1].reduce((s,g)=>s+g.importe,0);
+    const tb = b[1].reduce((s,g)=>s+g.importe,0);
+    return tb-ta;
+  }).forEach(([cat, items]) => {
+    const totCat = items.reduce((s,g) => s + g.importe, 0);
+    const totCatAnual = items.reduce((s,g) => s + (g.esAnual ? (g.importeAnual || g.importe*12) : g.importe*12), 0);
+    html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--border-lt);font-size:11px;">
+      <span style="color:var(--ink-soft);">${catIconos[cat]||'📌'} ${catNombres[cat]||cat}</span>
+      <span class="mono" style="font-size:11px;color:var(--orange-dk);">${fmtE(totCatAnual, 0)}</span>
+    </div>`;
+  });
+
+  html += '</div></div></div>';
+
+  // Variables group
+  const nVar = gastosVariables.length;
+  html += `<div style="border:1px solid var(--border-lt);border-radius:8px;overflow:hidden;margin-bottom:5px;">
+    <div onclick="toggleCat('anualVar',this)" style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#f5faf9;cursor:pointer;user-select:none;">
+      <span class="cat-arrow" id="anualVar_arrow" style="font-size:10px;">▶</span>
+      <span style="flex:1;font-size:11px;font-weight:600;color:var(--ink-soft);">🛒 Gastos variables</span>
+      <span style="font-size:10px;color:var(--ink-muted);">${nVar} gastos</span>
+      <span class="mono" style="font-size:12px;font-weight:600;color:var(--orange-dk);">${fmtE(varAnual, 0)}</span>
+    </div>
+    <div id="anualVar" class="cat-body">
+      <div style="padding:6px 10px;">`;
+
+  const catsVar = new Map();
+  gastosVariables.forEach(g => {
+    const cat = g.categoria;
+    if (!catsVar.has(cat)) catsVar.set(cat, []);
+    catsVar.get(cat).push(g);
+  });
+  [...catsVar.entries()].sort((a,b) => {
+    const ta = a[1].reduce((s,g)=>s+g.importe,0);
+    const tb = b[1].reduce((s,g)=>s+g.importe,0);
+    return tb-ta;
+  }).forEach(([cat, items]) => {
+    const totCatAnual = items.reduce((s,g) => s + g.importe * 12, 0);
+    html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--border-lt);font-size:11px;">
+      <span style="color:var(--ink-soft);">${catIconos[cat]||'📌'} ${catNombres[cat]||cat}</span>
+      <span class="mono" style="font-size:11px;color:var(--orange-dk);">${fmtE(totCatAnual, 0)}</span>
+    </div>`;
+  });
+
+  html += '</div></div></div>';
+
+  // Total row
+  html += `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 10px 4px;border-top:2px solid var(--teal);font-size:13px;font-weight:700;">
+    <span style="color:var(--ink);">Total gastos</span>
+    <span class="mono" style="font-size:16px;font-weight:700;color:var(--teal-dark);">${fmtE(gastosAnual, 0)}</span>
+  </div>`;
+
+  html += '</div>';
+
+  el.innerHTML = html;
+}
+
+function rowA(label, val, bold=false, sub='') {
+  const cls = bold ? ' res-row hi' : ' res-row';
+  return `<div class="${cls}"><div class="lbl">${label}${sub ? `<small>${sub}</small>` : ''}</div><div class="val">${fmtE(val, 0)}</div></div>`;
+}
+
+// ══════════════ IMPORT / EXPORT ══════════════
+function exportarDatos() {
+  const nombre = prompt('Nombre del archivo (sin extensión):', 'gestor-gastos');
+  if (!nombre) return;
+  const data = {
+    fecha: new Date().toISOString(),
+    version: '3.0',
+    ingresos, gastosFijos, gastosVariables
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = nombre + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importarDatos() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        const data = JSON.parse(ev.target.result);
+        if (data.ingresos) ingresos = data.ingresos;
+        if (data.gastosFijos) gastosFijos = data.gastosFijos;
+        // Migrate old suscripciones array into gastosFijos
+        if (data.suscripciones && Array.isArray(data.suscripciones)) {
+          data.suscripciones.forEach(s => {
+            gastosFijos.push({ ...s, categoria: 'suscripciones', esAnual: s.esAnual || false });
+          });
+        }
+        if (data.gastosVariables) gastosVariables = data.gastosVariables;
+        nextId = 100;
+        [...ingresos, ...gastosFijos, ...gastosVariables].forEach(it => {
+          if (!it.id || it.id.startsWith('it_')) it.id = uid();
+        });
+        ingresos.forEach(it => { if (!it.pagas) it.pagas = 12; });
+        gastosFijos.forEach(it => { if (it.esAnual === undefined) it.esAnual = false; });
+        calcularTodo();
+      } catch (err) {
+        alert('Error al importar: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+// ══════════════ INIT ══════════════
+calcularTodo();
+</script>
+</body>
+</html>
