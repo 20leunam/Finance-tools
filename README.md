@@ -2,16 +2,18 @@
 
 Suite de herramientas financieras personales con estética retro terminal. Alojada en GitHub Pages.
 
+🔗 **Página web:** <https://20leunam.github.io/Finance-tools/>
+
 ## Herramientas
 
-| Tecla | Herramienta | Descripción |
-|-------|-------------|-------------|
-| `1` | [Simulador de Hipoteca](simulador-hipoteca.html) | Simulación completa de hipoteca: cuotas, vinculaciones, bonificaciones, impuestos, comisiones y viabilidad de compra. |
-| `2` | [Gestor de Gastos](gestor-gastos.html) | Organización de ingresos y gastos (fijos y variables), gráficos, regla 33/33/33 y resumen anual. |
+| Herramienta | Descripción |
+|-------------|-------------|
+| [Simulador de Hipoteca](simulador-hipoteca.html) | Simulación completa de hipoteca: cuotas, vinculaciones, bonificaciones, impuestos, comisiones y viabilidad de compra. |
+| [Gestor de Gastos](gestor-gastos.html) | Organización de ingresos y gastos (fijos y variables), gráficos, regla 33/33/33 y resumen anual. |
 
 ## Uso
 
-Abre `index.html` y pulsa en cualquiera de las dos tarjetas (o usa las teclas `1` / `2`).
+Abre la página (<https://20leunam.github.io/Finance-tools/>) y pulsa en cualquiera de las dos tarjetas.
 
 ## Local
 
@@ -21,7 +23,7 @@ Abre `index.html` y pulsa en cualquiera de las dos tarjetas (o usa las teclas `1
 
 ## Publicación
 
-Este repositorio está publicado con GitHub Pages en:
+Este repositorio se publica automáticamente con GitHub Pages (workflow `.github/workflows/pages.yml`) en:
 
 ```
 https://20leunam.github.io/Finance-tools/
