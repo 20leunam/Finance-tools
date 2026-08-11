@@ -96,43 +96,45 @@ main {
 
 .panel {
   width: 100%;
-  max-width: 748px;
+  max-width: 1050px;
   background: var(--white);
   border: 3px solid var(--border-lt);
-  border-radius: 22px;
+  border-radius: 24px;
   box-shadow: 0 4px 32px rgba(15,139,141,0.12);
-  padding: 46px 44px 52px;
+  padding: 52px 48px 58px;
 }
 .panel-title {
   text-align: center;
   font-family: 'DM Mono', monospace;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 500;
   letter-spacing: 4px;
   text-transform: uppercase;
   color: var(--teal);
-  margin-bottom: 38px;
+  margin-bottom: 40px;
 }
 
 .tools-grid {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 26px;
+  gap: 30px;
 }
 
 .tool-card {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 22px;
+  text-align: center;
+  gap: 14px;
   text-decoration: none;
   color: var(--ink);
   background: #fff;
   border: 3px solid var(--border);
-  border-radius: 22px;
-  padding: 0 36px;
-  height: 176px;
-  width: calc(176px * 1.618);
+  border-radius: 24px;
+  padding: 30px 34px;
+  height: 286px;
+  width: calc(286px * 1.618);
   transition: all 0.2s;
   box-shadow: 0 4px 16px rgba(15,139,141,0.08);
 }
@@ -144,13 +146,13 @@ main {
 .tool-card.gastos:hover { border-color: var(--orange); }
 
 .tool-icon {
-  width: 80px;
-  height: 80px;
-  border-radius: 20px;
+  width: 96px;
+  height: 96px;
+  border-radius: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
+  font-size: 46px;
   flex-shrink: 0;
 }
 .tool-card.hipoteca .tool-icon {
@@ -165,25 +167,28 @@ main {
 .tool-info {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 8px;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
   min-width: 0;
+  width: 100%;
 }
 
 .tool-name {
   font-family: 'DM Mono', monospace;
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 500;
   letter-spacing: -0.5px;
   color: var(--teal-dark);
+  line-height: 1.25;
 }
 .tool-card.gastos .tool-name { color: var(--orange-dk); }
 
 .tool-desc {
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.5;
   color: var(--ink-soft);
+  max-width: 400px;
 }
 
 /* ─── RESPONSIVE ─── */
@@ -195,13 +200,13 @@ main {
   .hero-title { font-size: 34px; }
   .hero-sub { font-size: 17px; }
   main { padding: 36px 12px 60px; }
-  .panel { padding: 28px 16px 34px; }
-  .panel-title { font-size: 14px; letter-spacing: 2px; margin-bottom: 24px; }
-  .tools-grid { gap: 16px; }
-  .tool-card { width: 100%; height: 150px; padding: 0 24px; }
-  .tool-icon { width: 60px; height: 60px; border-radius: 16px; font-size: 30px; }
-  .tool-name { font-size: 19px; }
-  .tool-desc { font-size: 13px; }
+  .panel { padding: 30px 18px 36px; }
+  .panel-title { font-size: 15px; letter-spacing: 2.5px; margin-bottom: 26px; }
+  .tools-grid { gap: 18px; }
+  .tool-card { width: 100%; height: auto; padding: 30px 22px; }
+  .tool-icon { width: 72px; height: 72px; border-radius: 18px; font-size: 34px; }
+  .tool-name { font-size: 22px; }
+  .tool-desc { font-size: 15px; }
 }
 </style>
 </head>
@@ -213,7 +218,7 @@ main {
     <span class="logo-block"></span>
     <span class="hero-title">Finance Tools</span>
   </div>
-  <div class="hero-sub">(Calculadoras para gestiones financieras como hipotecas, gastos e inversiones)</div>
+  <div class="hero-sub">Calculadoras para gestiones financieras como hipotecas, gastos e inversiones</div>
 </div>
 
 <!-- ═══════════ HERRAMIENTAS ═══════════ -->
