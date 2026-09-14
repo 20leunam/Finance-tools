@@ -192,6 +192,20 @@ html, body {
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s;
   appearance: none; -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+.field input[type=number]::-webkit-inner-spin-button,
+.field input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
 }
 .field input.auto-calc {
   background: #f0f0f0;
@@ -377,7 +391,7 @@ html, body {
 .ratio-fill { height: 100%; border-radius: 6px; transition: width 0.5s ease; }
 .ratio-ticks {
   display: flex; justify-content: space-between;
-  font-size: 9px; color: var(--ink-muted); margin-top: 3px;
+  font-size: 10px; color: var(--ink-muted); margin-top: 3px;
 }
 
 .viab-badge {
@@ -625,7 +639,7 @@ html, body {
   box-shadow: 0 0 0 2px rgba(15,139,141,0.12);
 }
 .vinc-prima-suf {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--ink-muted);
   white-space: nowrap;
   font-weight: 500;
@@ -662,7 +676,7 @@ html, body {
   color: var(--teal-dark);
 }
 .vinc-bonif-suf {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--ink-muted);
   font-weight: 500;
 }
@@ -760,7 +774,7 @@ html, body {
   letter-spacing: -0.5px;
 }
 .kpi-card-sub {
-  font-size: 9px;
+  font-size: 10px;
   color: rgba(255,255,255,0.55);
   margin-top: 2px;
 }
@@ -848,7 +862,7 @@ html, body {
 
   /* ─── BODY ─── */
   html, body {
-    font-size: 14px;
+    font-size: 15px;
     height: auto;
   }
 
@@ -1052,7 +1066,7 @@ html, body {
     padding: 6px 5px;
   }
   .vinc-bonif-pre {
-    font-size: 14px;
+    font-size: 15px;
   }
   .btn-add-vinc {
     padding: 12px;
@@ -1082,7 +1096,7 @@ html, body {
     font-size: 13px;
   }
   .res-row.hi .val {
-    font-size: 14px;
+    font-size: 15px;
   }
   .res-row.total-row .lbl {
     font-size: 13px;
@@ -1119,7 +1133,7 @@ html, body {
   }
   .amort-mini thead th {
     padding: 8px 6px;
-    font-size: 9px;
+    font-size: 10px;
   }
   .amort-mini tbody td {
     padding: 6px 6px;
@@ -1194,7 +1208,7 @@ html, body {
     margin: 6px 0 4px;
   }
   .ratio-ticks {
-    font-size: 8px;
+    font-size: 10px;
   }
 
 }
@@ -1779,7 +1793,7 @@ html, body {
 
     <!-- Gastos fijos -->
     <div class="sec">
-      <div class="sec-title"><span class="icon">🏠</span> Gastos fijos <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9px;color:var(--ink-muted);">(anuales)</span></div>
+      <div class="sec-title"><span class="icon">🏠</span> Gastos fijos <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;color:var(--ink-muted);">(anuales)</span></div>
       <div class="g2">
         <div class="field">
           <label>IBI</label>
@@ -1823,7 +1837,7 @@ html, body {
 
     <!-- Gastos personalizados -->
     <div class="sec">
-      <div class="sec-title"><span class="icon">📌</span> Gastos personalizados <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9px;color:var(--ink-muted);">(mensuales)</span></div>
+      <div class="sec-title"><span class="icon">📌</span> Gastos personalizados <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;color:var(--ink-muted);">(mensuales)</span></div>
       <div id="gastosPersonalizados">
         <p style="font-size:11px;color:var(--ink-muted);">Añade gastos adicionales personalizados.</p>
       </div>
@@ -2585,7 +2599,7 @@ function renderAmortChart() {
   for(let i=0; i<=4; i++) {
     const val = (maxCum/4)*i;
     const yy = yL(val);
-    lineYTicks += `<text x="${pad.left-6}"y="${yy}"text-anchor="end"font-size="8"fill="var(--ink-muted)"dy="0.3em">${val===0?'0':(val/1000).toFixed(0)+'k'}</text>`;
+    lineYTicks += `<text x="${pad.left-6}"y="${yy}"text-anchor="end"font-size="10"fill="var(--ink-muted)"dy="0.3em">${val===0?'0':(val/1000).toFixed(0)+'k'}</text>`;
     lineYTicks += `<line x1="${pad.left}"y1="${yy}"x2="${W-pad.right}"y2="${yy}"stroke="var(--border-lt)"stroke-width="0.5"/>`;
   }
 
@@ -2595,7 +2609,7 @@ function renderAmortChart() {
   for(let a=1; a<=años; a++) {
     const xc = xL(a);
     lineXTicks += `<line x1="${xc}"y1="${lineBaseY}"x2="${xc}"y2="${lineBaseY+4}"stroke="var(--ink-muted)"stroke-width="0.5"/>`;
-    lineXTicks += `<text x="${xc}"y="${lineBaseY+14}"text-anchor="middle"font-size="${años<=15?7:años<=25?6:5}"fill="var(--ink-muted)">${a}</text>`;
+    lineXTicks += `<text x="${xc}"y="${lineBaseY+14}"text-anchor="middle"font-size="10"fill="var(--ink-muted)">${a}</text>`;
   }
 
   // ─── BAR CHART ───
@@ -2617,13 +2631,13 @@ function renderAmortChart() {
   for(let i=0; i<=3; i++) {
     const val = (maxYr/3)*i;
     const yy = barBaseY - (val/maxYr)*barH;
-    barYTicks += `<text x="${pad.left-6}"y="${yy}"text-anchor="end"font-size="8"fill="var(--ink-muted)"dy="0.3em">${val===0?'0':(val/1000).toFixed(0)+'k'}</text>`;
+    barYTicks += `<text x="${pad.left-6}"y="${yy}"text-anchor="end"font-size="10"fill="var(--ink-muted)"dy="0.3em">${val===0?'0':(val/1000).toFixed(0)+'k'}</text>`;
     barYTicks += `<line x1="${pad.left}"y1="${yy}"x2="${W-pad.right}"y2="${yy}"stroke="var(--border-lt)"stroke-width="0.5"/>`;
   }
 
   // X axis ticks — show all years equidistantly
   let xTicks = '';
-  let xFont = años <= 10 ? 9 : años <= 15 ? 8 : años <= 20 ? 7 : años <= 30 ? 6 : 5;
+  let xFont = 8;
   for(let a=1; a<=años; a++) {
     const xc = xB(a);
     xTicks += `<line x1="${xc}"y1="${barBaseY}"x2="${xc}"y2="${barBaseY+4}"stroke="var(--ink-muted)"stroke-width="0.5"/>`;
@@ -2651,13 +2665,13 @@ function renderAmortChart() {
     ${xTicks}
     <!-- Legend -->
     <rect x="${W-155}"y="2"width="10"height="10"fill="var(--teal)"rx="2"/>
-    <text x="${W-141}"y="11"font-size="9"fill="var(--ink)">Capital acum.</text>
+    <text x="${W-141}"y="11"font-size="10"fill="var(--ink)">Capital acum.</text>
     <rect x="${W-155}"y="15"width="10"height="10"fill="none"stroke="var(--orange)"stroke-width="2"stroke-dasharray="4,2"rx="2"/>
-    <text x="${W-141}"y="24"font-size="9"fill="var(--ink)">Intereses acum.</text>
+    <text x="${W-141}"y="24"font-size="10"fill="var(--ink)">Intereses acum.</text>
     <rect x="${W-78}"y="2"width="10"height="10"fill="var(--teal-dark)"rx="2"/>
-    <text x="${W-64}"y="11"font-size="9"fill="var(--ink)">Capital</text>
+    <text x="${W-64}"y="11"font-size="10"fill="var(--ink)">Capital</text>
     <rect x="${W-78}"y="15"width="10"height="10"fill="var(--orange)"rx="2"/>
-    <text x="${W-64}"y="24"font-size="9"fill="var(--ink)">Intereses</text>
+    <text x="${W-64}"y="24"font-size="10"fill="var(--ink)">Intereses</text>
   `;
   svg.innerHTML = html;
 }
@@ -2973,7 +2987,7 @@ function calcularGastos() {
     html += rowTip('Cash on Cash', fmt(cashOnCash,1)+'%', 'Cash-flow anual / desembolso inicial.');
     html += rowTip('ROCE', fmt(roce,1)+'%', 'Beneficio neto anual / capital total invertido.');
     html += rowTip('Rent. total s/ inversión*', fmt(rentTotalInv,1)+'%', 'Beneficio neto + revalorización (2% anual) / inversión inicial.');
-    html += '<div style="margin-top:6px;font-size:9px;color:var(--ink-muted);">* Incluye revalorización estimada del 2% anual</div>';
+    html += '<div style="margin-top:6px;font-size:10px;color:var(--ink-muted);">* Incluye revalorización estimada del 2% anual</div>';
     document.getElementById('metricasRentabilidad').innerHTML = html;
 
     // Build bracket-only tip for Tipo efectivo
@@ -3009,7 +3023,7 @@ function calcularGastos() {
     irpfHtml += rowTip("Tipo efectivo", fmt(tipoEfectivo*100,1)+"%", tipBracketsOnly);
     irpfHtml += rowTip("IRPF anual estimado", "<strong style=\"color:var(--orange);\">"+fmtE(irpfEstimado,0)+"</strong>", detalleIrpf);
     irpfHtml += row("IRPF mensual", fmtE(irpfMensual));
-    irpfHtml += "<div style=\"margin-top:6px;font-size:9px;color:var(--ink-muted);\">* Incluye reduccion del 50% por arrendamiento y amortizacion del 3%. Consulta con un asesor fiscal.</div>";
+    irpfHtml += "<div style=\"margin-top:6px;font-size:10px;color:var(--ink-muted);\">* Incluye reduccion del 50% por arrendamiento y amortizacion del 3%. Consulta con un asesor fiscal.</div>";
     document.getElementById('irpfResultado').innerHTML = irpfHtml;
   } else {
     document.getElementById('metricasRentabilidad').innerHTML = '<p style="font-size:11px;color:var(--ink-muted);">Activa el alquiler para ver las métricas.</p>';
@@ -3043,7 +3057,7 @@ function calcularGastos() {
   rmHtml += rowTotal('Restante mensual', fmtE(restante,2));
   const pctGastos = totalIngresos > 0 ? (totalGastosMensualCalc / totalIngresos * 100) : 0;
   rmHtml += '<div class="res-row"><div class="lbl">% gastos / ingresos</div><div class="val" style="color:var(--ink-muted);">' + fmt(pctGastos,1) + '%</div></div>';
-  if(restante < 0) rmHtml += '<div style="margin-top:4px;font-size:9px;color:var(--red);">⚠️ Los gastos superan los ingresos</div>';
+  if(restante < 0) rmHtml += '<div style="margin-top:4px;font-size:10px;color:var(--red);">⚠️ Los gastos superan los ingresos</div>';
   document.getElementById('resumenMensual').innerHTML = rmHtml;
 
 }
