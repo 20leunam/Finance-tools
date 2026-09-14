@@ -1513,7 +1513,7 @@ html, body {
               <span class="vinc-bonif-suf">%</span>
             </div>
             <label class="switch">
-              <input type="checkbox" id="sw-nomina"onchange="toggleVincSw('nomina',this.checked)">
+              <input type="checkbox" id="sw-nomina" checked onchange="toggleVincSw('nomina',this.checked)">
               <span class="slider"></span>
             </label>
             <span class="vinc-profit" id="vinc-profit-nomina" style="display:none;"></span>
@@ -1536,7 +1536,7 @@ html, body {
               <span class="vinc-bonif-suf">%</span>
             </div>
             <label class="switch">
-              <input type="checkbox" id="sw-vidaHip"onchange="toggleVincSw('vidaHip',this.checked)">
+              <input type="checkbox" id="sw-vidaHip" checked onchange="toggleVincSw('vidaHip',this.checked)">
               <span class="slider"></span>
             </label>
             <span class="vinc-profit" id="vinc-profit-vidaHip" style="display:none;"></span>
@@ -1555,11 +1555,11 @@ html, body {
             </div>
             <div class="vinc-bonif-editable">
               <span class="vinc-bonif-pre">−</span>
-              <input type="number" id="bonif-hogar" value="0.10" min="0" max="5"step="0.05"oninput="calcular()">
+              <input type="number" id="bonif-hogar" value="0.25" min="0" max="5"step="0.05"oninput="calcular()">
               <span class="vinc-bonif-suf">%</span>
             </div>
             <label class="switch">
-              <input type="checkbox" id="sw-hogar"onchange="toggleVincSw('hogar',this.checked)">
+              <input type="checkbox" id="sw-hogar" checked onchange="toggleVincSw('hogar',this.checked)">
               <span class="slider"></span>
             </label>
             <span class="vinc-profit" id="vinc-profit-hogar" style="display:none;"></span>
@@ -1990,7 +1990,7 @@ const vincDefs = {
   protPago: { desc: 'protPago', bonif: 0.10, nombre: 'Seguro Pagos', tienePrima: true, primaId: 'v_prot_prima' },
   pension:  { desc: 'pension',  bonif: 0.10, nombre: 'Plan Pensiones', tienePrima: true, primaId: 'v_pension_ap' },
 };
-let vincActivas = {};
+let vincActivas = {nomina:true, vidaHip:true, hogar:true};
 let vincVisibles = ['nomina','vidaHip','hogar'];
 let vincExtraVisible = false;
 
@@ -3200,6 +3200,10 @@ function procesarImportacion(e) {
 }
 
 // ══════════════ INIT ══════════════
+['nomina','vidaHip','hogar'].forEach(id => {
+  const row = document.getElementById('vt-'+id);
+  if(row) row.classList.add('active-vinc');
+});
 calcular();
 </script>
 </body>
