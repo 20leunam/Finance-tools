@@ -1333,8 +1333,8 @@ html, body {
           <input type="number" id="precio" value="200000" min="0"oninput="calcular()">
         </div>
       </div>
-      <div class="field">
-        <label>Comunidad Autónoma</label>
+      <div class="field" id="fieldComunidad">
+        <label id="labelComunidad">Comunidad Autónoma</label>
         <select id="comunidad"onchange="calcular()">
           <option value="andalucia">Andalucía (ITP 7%)</option>
           <option value="aragon">Aragón (ITP 8%)</option>
@@ -1356,6 +1356,16 @@ html, body {
           <option value="navarra">Navarra (ITP 6%)</option>
           <option value="pais_vasco">País Vasco (ITP 7%)</option>
         </select>
+        <div class="input-wrap suf-pad" id="fieldItpCustom" style="display:none;">
+          <input type="number" id="itpCustom" value="10" min="1" max="15" step="0.1"onchange="calcular()">
+          <span class="suf">%</span>
+        </div>
+      </div>
+      <div class="field" style="margin-top:-4px;">
+        <label style="display:flex;align-items:center;gap:6px;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:500;">
+          <input type="checkbox" id="chkItbCustom" onchange="toggleItbCustom(this.checked)" style="width:14px;height:14px;accent-color:var(--teal);">
+          ITP personalizado
+        </label>
       </div>
     </div>
 
@@ -1999,6 +2009,23 @@ function v(id){ return parseFloat(document.getElementById(id)?.value)||0; }
 function vi(id){ return parseInt(document.getElementById(id)?.value)||0; }
 function vs(id){ return document.getElementById(id)?.value||''; }
 
+// ══════════════ ITP PERSONALIZADO ══════════════
+function toggleItbCustom(on) {
+  const sel = document.getElementById('comunidad');
+  const inp = document.getElementById('fieldItpCustom');
+  const lbl = document.getElementById('labelComunidad');
+  if(on) {
+    sel.style.display = 'none';
+    inp.style.display = 'block';
+    lbl.textContent = 'ITP';
+  } else {
+    sel.style.display = '';
+    inp.style.display = 'none';
+    lbl.textContent = 'Comunidad Autónoma';
+  }
+  calcular();
+}
+
 // ══════════════ COMPRADORES ══════════════
 function setCompradores(n, btn) {
   numComp = n;
@@ -2110,7 +2137,8 @@ function calcular() {
   const ahorros   = v('ahorros');
 
   // Impuestos auto
-  const itpPct = ccaaITP[comunidad]||8;
+  const itbCustomOn = document.getElementById('chkItbCustom').checked;
+  const itpPct = itbCustomOn ? v('itpCustom') : (ccaaITP[comunidad]||8);
   const gImpAuto = precio * itpPct / 100;
   document.getElementById('gImpuestos').value = Math.round(gImpAuto);
   document.getElementById('itpLabel').textContent = `(ITP ${itpPct}% = ${fmtE(gImpAuto)})`;
